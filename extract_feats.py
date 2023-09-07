@@ -43,7 +43,7 @@ def extract_features(model: torch.nn.Module, images) -> np.ndarray:
     ])
     # if input is a list of image paths then load images
     if isinstance(images[0], str):
-        images = [Image.open(x) for x in images]
+        images = [Image.open(x).convert('RGB') for x in images]
     # convert images to tensors
     images = torch.stack([transform(x) for x in images])
     # extract features
