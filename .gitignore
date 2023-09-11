@@ -2,7 +2,8 @@
 *.jpeg
 *.jpg
 *.png
+*.webp
 __pycache__
-test/
+test*
 *.pt
 *.pth

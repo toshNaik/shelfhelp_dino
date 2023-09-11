@@ -27,11 +27,14 @@ def main():
     yolo_model = yolo_load()
 
     for img in os.listdir('shelf_images'):
+        if not img.startswith('shelf'):
+            continue
         print(img)
         frame = cv2.imread(os.path.join('shelf_images', img))
         frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         # run yolo
-        pred = yolo_model(frame)
+        pred = yolo_model(frame.copy())
+        pred.show()
         # strange way to get pd table but found here: https://github.com/ultralytics/yolov5/issues/7651
         table = pred.pandas().xyxy[0]
         xmin = table['xmin'].tolist()
