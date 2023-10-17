@@ -1,3 +1,4 @@
+# helper functions to load dino model and extract features
 import torch
 from typing import Iterable
 import numpy as np
@@ -43,9 +44,15 @@ def extract_features(model: torch.nn.Module, images) -> np.ndarray:
     ])
     # if input is a list of image paths then load images
     if isinstance(images[0], str):
-        images = [Image.open(x).convert('RGB') for x in images]
+        temp_list = []
+        for x in images:
+            try:
+                temp_list.append(Image.open(x).convert('RGB'))
+            except:
+                pass
+        images = temp_list
     # convert images to tensors
-    images = torch.stack([transform(x) for x in images])
+    images = torch.stack([transform(x) for x in images]).cuda()
     # extract features
     with torch.no_grad():
         features = model(images).squeeze()
@@ -58,5 +65,5 @@ if __name__ == '__main__':
     # load checkpoint
     load_pretrained_weights(vits8, 'dino_checkpoint.pth', 'teacher')
     # extract features
-    features = extract_features(vits8, ['life.jpeg', 'oreos.jpeg'])
+    features = extract_features(vits8, ['orig.jpeg', 'sierramistsoda0.png'])
     print(features.shape)
