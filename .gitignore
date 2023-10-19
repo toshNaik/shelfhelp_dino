@@ -1,10 +1,5 @@
 *.npy
-*.jpeg
-*.jpg
-*.png
-*.webp
 __pycache__
 test*
 *.pt
 *.pth
-*.pkl
