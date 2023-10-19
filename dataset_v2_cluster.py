@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import pickle
 
 def load_data():
+    '''
+    Utility function for evaluate to load all npy files into a single dataset
+    '''
     data_dir = 'features/'
     files = [f for f in os.listdir(data_dir) if f.endswith('.npy')]
 
@@ -23,18 +26,24 @@ def load_data():
     all_data = all_data.reshape(-1, 384)
     return all_data
 
-def cluster():
+def cluster(num_clusters=30):
+    '''
+    Cluster for num_clusters and save the model
+    '''
     all_data = load_data()
-    kmeans = KMeans(n_clusters=50)
+    kmeans = KMeans(n_clusters=num_clusters)
     kmeans.fit(all_data)
 
     cluster_centers = kmeans.cluster_centers_
 
-    with open('kmeans_fitted50.pkl', 'wb') as f:
+    with open('kmeans_models/kmeans_fitted30.pkl', 'wb') as f:
         pickle.dump(kmeans, f)
     
-
 def evaluate():
+    '''
+    Evaluate for various cluster sizes using the elbow method and silhouette scores
+    '''
+
     # 1. Load all npy files into a single dataset
     data_dir = 'features/'
     files = [f for f in os.listdir(data_dir) if f.endswith('.npy')]
@@ -74,4 +83,4 @@ def evaluate():
 
 
 if __name__ == '__main__':
-    cluster()
+    cluster(num_clusters=30)
