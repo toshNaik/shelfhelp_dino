@@ -62,7 +62,7 @@ def dist_plot():
         # y lim would determine the number of images to display per cluster
         # a larger ylim will result in the images coinciding with each other
         ax2.set_ylim(5, 0)
-        # align x axis with top plot
+        # align x axis with top plot (sharex causes issues with xticks display)
         ax2.set_xlim(ax1.get_xlim())
 
         for x, image_list in enumerate(cluster_images):

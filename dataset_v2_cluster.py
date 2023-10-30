@@ -43,11 +43,6 @@ def evaluate():
     '''
     Evaluate for various cluster sizes using the elbow method and silhouette scores
     '''
-
-    # 1. Load all npy files into a single dataset
-    data_dir = 'features/'
-    files = [f for f in os.listdir(data_dir) if f.endswith('.npy')]
-
     all_data = load_data()
 
     # 3. Apply KMeans clustering and use the elbow method
