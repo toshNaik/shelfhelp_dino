@@ -42,7 +42,9 @@
 - Essentially, the model was given a query image and the model was expected to retrieve the top-n most similar images from the dataset.
 - The model was evaluated on the mAP score. The mAP score is the mean of the average precision scores for each query image.
 - The original model actually ended up having slightly better scores than the finetuned model.
-- A possible reason for this could be mode collapse. Due to the nature of how the student and teacher network are trained, the representation were slowly collapsing to a single point.
+- There could be two reasons for this:
+  - A possible reason for this could be mode collapse. Due to the nature of how the student and teacher network are trained, the representation were slowly collapsing to a single point.
+  - Another reason could be that the dataset was noisy. The dataset was obtained by scraping images from google. 
 
 ## Clustering
 - To find the optimal number of clusters, the elbow method was used. However, the elbow method was not very useful in this case as the dataset was huge and the embeddings were very high dimensional. 
@@ -75,14 +77,9 @@
 </center>
 
 ## Other:
-- I also made APIs for the models and other utility functions which weren't present in the original shelfhelp repository.
-- These APIs can be used to refactor the code and make it more modular.
+- I also made APIs for the models and other utility functions which weren't present in the original shelfhelp repository. These APIs can be used to refactor the code and make it more modular.
 - At the start of the semester I also attempted to work on the motion model of the Monte Carlo Localization model but I was not able to make much progress on it. I started out by manually integrating the IMU data to obtain position and angles however, there were problems with drifting. I ended up using a library to get accurate angles but I was not able to get good enough position data.
 
-things to consider:
-
-- Clustering for 20,30,40 (maybe elbow and silhoutte if interpretable)
-- how embeddings (distributions are represented) and reasoning behind why model was not enforced to learn only certain representations but instead let the model identify useful representations
-- hand designing map with embeddings and query image with detected pixel locations
-- Struggle with IMUs
-- APIs for models and other utility functions
+## Future Work:
+- Making the entire Monte Carlo Localization pipeline. Here I just focused on making the resampling stage better. The next step would be to integrate this with the motion model and the sensor model.
+- Thoroughly testing the distribution matching. I only got to test it on a few shelf images. I would like to test it on more images (possibly in a real grocery store) and also try different similarity metrics. Functions for different similarity metrics have already been implemented in similarity.py.
