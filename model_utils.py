@@ -81,7 +81,6 @@ class Dino:
         return features
 
 ### YOLO SPECIFIC FUNCTIONS ###
-### TODO: Move these to class ###
 
 def yolo_load():
     '''

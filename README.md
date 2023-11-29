@@ -1,10 +1,14 @@
 # Shelfhelp Dino
-### This repository contains code that uses a finetuned DINO model by Meta, YOLOv5, and KMeans algorithm to represent grocery store images as a distribution of products. 
+## The Problem
+Accurate localization within grocery store environments poses a considerable challenge due to the predominantly featureless nature of the surroundings when analyzed in the context of Lidar and depth data. This led to the hypothesis that incorporating semantic information, derived from visual features extracted from images may result in improving the performance of localization in such environments.
+
+This repository contains code that uses the DINO model by Meta, YOLOv5, and KMeans algorithm to represent grocery store images as a distribution of products. 
 
 ## Background and Objective
 - This work is part of my independent study for Fall 2023. 
-- The primary objective was to use the distributions obtained from finetuned Dino model to improve the resampling stage of Monte Carlo Localization. 
-- Features obtained from images are embedded on the map. When the user walks around the store, these embeddings can be used to better localize the user in the store. (see figure 1a and b)
+- The primary aim was to enhance the localization in a grocery store by incorporating distributions obtained from products placed between aisles.
+- This involves embedding the features obtained from images on the map. This work assumes insignificant changes in product placement within the grocery store. 
+- Figure 1a and 1b show a shelf with products and the corresponding distribution for that shelf.
 
 <center>
 <figure>
@@ -22,12 +26,10 @@
 
 
 ## DINO
-- DINO is a framework to train a self-supervised model to learn representations from images. 
-- It consists of a student and teacher network.
-- It employs a multi-crop strategy to train the model. Multiple views of the same image are created at different scales and passed to the student and teacher network. The student network learns to capture the global view of the image from the local views.
+- DINO is a framework to train a self-supervised model to learn representations from images. It employs a dual-network architecture, consisting of a student and a teacher network. Figure 2 shows the architecture of the model.
+- It employs a multi-crop strategy to train the model. Multiple views of the same image are created at a 'global' and 'local' scale and passed to the student and teacher network. The student network learns to capture the global view of the image from the local views.
 - The parameters of the teacher network are updated using the exponential moving average of the student network.
 - The loss is cross-entropy of the embeddings predicted by the student and the teacher network. This is used to update the parameters of the student network.
-- Figure 2 shows the architecture of the model.
 
 <center>
 <figure>
@@ -37,14 +39,17 @@
 </center>
 
 ## Image Retrieval Task
-- The DINO Vit model was finetuned on custom dataset obtained by scraping images from google.
+- The DINO ViT model was finetuned on custom dataset obtained by scraping images from google.
+- About **16000** images were obtained using queries from a FDC(FoodDataCentral) dataset.
 - The model was then evaluated on the image retrieval task.
-- Essentially, the model was given a query image and the model was expected to retrieve the top-n most similar images from the dataset.
+- The model was given a query image and the model was expected to retrieve the top-n most similar images from the dataset. There were 70 products and 350 target images (5 for each product).
 - The model was evaluated on the mAP score. The mAP score is the mean of the average precision scores for each query image.
-- The original model actually ended up having slightly better scores than the finetuned model.
-- There could be two reasons for this:
-  - A possible reason for this could be mode collapse. Due to the nature of how the student and teacher network are trained, the representation were slowly collapsing to a single point.
-  - Another reason could be that the dataset was noisy. The dataset was obtained by scraping images from google. 
+
+| - | Original  | Finetuned |
+| ------------- | ------------- | ------------- |
+| top-1 |  0.986  | 1  |
+| top-3 | 0.99  | 1  |
+| top-5 | 0.973 | 0.987 |
 
 ## Clustering
 - To find the optimal number of clusters, the elbow method was used. However, the elbow method was not very useful in this case as the dataset was huge and the embeddings were very high dimensional. 
@@ -83,3 +88,4 @@
 ## Future Work:
 - Making the entire Monte Carlo Localization pipeline. Here I just focused on making the resampling stage better. The next step would be to integrate this with the motion model and the sensor model.
 - Thoroughly testing the distribution matching. I only got to test it on a few shelf images. I would like to test it on more images (possibly in a real grocery store) and also try different similarity metrics. Functions for different similarity metrics have already been implemented in similarity.py.
+- Completing the entire pipeline to publish it to RSS.
